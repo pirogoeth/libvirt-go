@@ -1,7 +1,21 @@
-image: alexzorin/libvirt-go_test:1.2
-script:
-  - go test -v
+---
+build:
+  image: alexzorin/libvirt-go_test:1.2
+  commands:
+    - go test -v
+
 notify:
-  email:
-    recipients:
-      - git@zor.io
+  slack:
+    webhook_url: $$SLACK_URL
+    channel: $$SLACK_CHANNEL
+    when:
+      started: true
+      success: true
+      failure: true
+
+publish:
+  github_release:
+    api_key: $$GITHUB_RELEASE_TOKEN
+  when:
+    event: tag
+    branch: master
